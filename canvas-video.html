@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <video src="test.mp4" id="video1" style="width: 200px;" controls></video>
+    <canvas id="myCanvas"></canvas>
+    <script>
+        var timer = null;
+        var video = document.getElementById('video1');
+        var canvas = document.getElementById("myCanvas");
+        var context = canvas.getContext("2d");
+        canvas.width = window.innerWidth / 2;
+        canvas.height = window.innerHeight / 2;
+        function draw1() {
+            timer = setInterval(function () {
+                if (video.currentTime >= 3.8) {
+                    //video.pause();
+                    clearInterval(timer);
+                };
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            }, 16);
+        };
+        draw1();
+    </script>
+</body>
+
+</html>

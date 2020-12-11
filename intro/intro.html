@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Webassembly &#x4ECB;&#x7ECD;</title>
+        <style>
+</style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h1 id="webassembly-介绍">Webassembly 介绍</h1>
+<h2 id="什么是-webassembly">什么是 Webassembly</h2>
+<p><code>Webassembly</code>（.wasm）是基于堆栈虚拟机的二进制指令格式, C/C+/RUST等高级语言可以被编译为.wasm 文件, 从而在浏览器运行。浏览器目前还不能直接通过script标签引用，需要通过js来进行加载，示例</p>
+<p>`
+(async () =&gt; {
+const importObject = {
+env: {
+abort(_msg, _file, line, column) {
+console.error(&quot;abort called at index.ts:&quot; + line + &quot;:&quot; + column);
+}
+}
+};</p>
+<p>const module = await WebAssembly.instantiateStreaming(
+fetch(&quot;build/optimized.wasm&quot;),
+importObject
+);</p>
+<pre><code>const minus = module.instance.exports.minus;
+const div = document.getElementById(&quot;div&quot;);
+
+const v1 = 2, v2 = 1;
+div.innerHTML = `${v1} - ${v2} = ${minus(v1, v2)}`;
+})()`
+</code></pre>
+<p>其中 <code>WebAssembly</code> 是浏览器Window 对象下的全局对象。</p>
+<p>Can I Use
+<img src="file:///d:\working\webassembly\intro\caniuse.png" alt="Can I Use" title="区块链"></p>
+<h2 id="示例项目">示例项目</h2>
+<h2 id="应用方向">应用方向</h2>
+<h3 id="用于开发无后端的视频帧提取截图">用于开发无后端的视频帧提取（截图）</h3>
+<p>传统的网页端的视频截图方案一般是通过 <code>canvas</code> 的 <code>getImageData()</code> 来获取指定矩形区域的图片数据, 然后再通过 <code>toDataURL()</code> 来把提取到的帧数据生成图片。</p>
+<p>但由于浏览器video标签对于视频格式种类的支持有限，因而很多格式的视频是无法预览也无法截图的。</p>
+<p>而在有了 <code>Webassembly</code> 之后可以考虑把原本是桌面应用的视频编解码库 <code>ffmpeg</code> 编译到网页端来使用。</p>
+<p><code>ffmpeg</code>是用C語言编写的，功能很丰富，支持很多种格式的视频，并且可以互相转换格式，需要使用<code>Emscripten</code> 在 <code>Ubuntu/MacOs</code> 系统上编译成<code>.wasm</code>文件，再通过js进行加载调用。</p>
+<p>可以把用户在网页上用<code>&lt;input type='file'&gt;</code> 选择的视频文件调用 <code>ffmpeg</code> 的接口先转换成 <code>.mp4</code>格式的文件，再放到<code>video</code>标签上进行播放，再套用上面说的传统的网页端截图方案进行截图。</p>
+<p>相比于上传视频到后端， <code>Webassembly + ffmpeg</code> 是把编译器发送到前端， 优点是用户无须等待视频的上传即可完成工作。</p>
+<h3 id="emscripten">Emscripten</h3>
+<blockquote>
+<p>Emscripten is a complete Open Source compiler toolchain to WebAssembly. Using Emscripten you can:</p>
+</blockquote>
+<blockquote>
+<p>Compile C and C++ code, or any other language that uses LLVM, into WebAssembly, and run it on the Web, Node.js, or other wasm runtimes.</p>
+</blockquote>
+<blockquote>
+<p>Compile the C/C++ runtimes of other languages into WebAssembly, and then run code in those other languages in an indirect way (for example, this has been done for Python and Lua).</p>
+</blockquote>
+<p>官网： <a href="https://emscripten.org/docs/introducing_emscripten/index.html">https://emscripten.org/docs/introducing_emscripten/index.html</a></p>
+<h3 id="ffmpeg">ffmpeg</h3>
+
+    </body>
+    </html>
